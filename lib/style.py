@@ -32,29 +32,9 @@ def apply_base_styles() -> None:
             background: radial-gradient(circle at top left, var(--bg-2), var(--bg-1));
         }
 
-        .stApp::before {
-            content: "";
-            position: fixed;
-            inset: -10%;
-            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1400' height='800' viewBox='0 0 1400 800'><g fill='none' stroke='%234aa3df' stroke-width='1.2' opacity='0.28'><path d='M80 120 L240 60 L360 140 L520 90 L690 180 L840 110 L1020 190 L1180 120'/><path d='M140 320 L260 220 L420 300 L600 240 L780 320 L960 260 L1120 330'/><path d='M120 520 L260 460 L420 540 L600 470 L760 560 L940 500 L1120 580'/></g><g fill='%234aa3df' opacity='0.35'><circle cx='80' cy='120' r='6'/><circle cx='240' cy='60' r='5'/><circle cx='360' cy='140' r='6'/><circle cx='520' cy='90' r='5'/><circle cx='690' cy='180' r='6'/><circle cx='840' cy='110' r='5'/><circle cx='1020' cy='190' r='6'/><circle cx='1180' cy='120' r='5'/><circle cx='140' cy='320' r='5'/><circle cx='260' cy='220' r='6'/><circle cx='420' cy='300' r='5'/><circle cx='600' cy='240' r='6'/><circle cx='780' cy='320' r='5'/><circle cx='960' cy='260' r='6'/><circle cx='1120' cy='330' r='5'/><circle cx='120' cy='520' r='5'/><circle cx='260' cy='460' r='6'/><circle cx='420' cy='540' r='5'/><circle cx='600' cy='470' r='6'/><circle cx='760' cy='560' r='5'/><circle cx='940' cy='500' r='6'/><circle cx='1120' cy='580' r='5'/></g></svg>");
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-position: 50% 50%;
-            opacity: 0.35;
-            z-index: 0;
-            animation: network-drift 40s ease-in-out infinite alternate;
-            pointer-events: none;
-            will-change: background-position;
-        }
-
         .stApp > div {
             position: relative;
             z-index: 1;
-        }
-
-        @keyframes network-drift {
-            0% { background-position: 48% 50%; }
-            100% { background-position: 52% 46%; }
         }
 
         h1, h2, h3, h4, h5, h6 {

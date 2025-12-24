@@ -7,6 +7,7 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 
+from lib.background import render_network_background
 from lib.data import load_resume_data
 from lib.style import apply_base_styles
 
@@ -17,6 +18,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 apply_base_styles()
+render_network_background()
 
 st.markdown(
     """
@@ -99,11 +101,11 @@ timeline_chart = (
             scale=alt.Scale(
                 domain=all_experiences,
                 range=[
-                    "#6d2d20",
-                    "#e5f500",
-                    "#31b231",
-                    "#2232e3",
-                    "#ff9808",
+                    "#a71e3b",
+                    "#e0a808",
+                    "#87bc25",
+                    "#1a0dab",
+                    "#fe8623",
                     "#dd2500",
                     "#e377c2",
                     "#7f7f7f",

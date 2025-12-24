@@ -4,6 +4,7 @@ from pathlib import Path
 
 import streamlit as st
 
+from lib.background import render_network_background
 from lib.data import load_resume_data
 from lib.style import apply_base_styles
 
@@ -15,6 +16,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 apply_base_styles()
+render_network_background()
 
 st.title("My Analytics Resume", text_alignment="center")
 
