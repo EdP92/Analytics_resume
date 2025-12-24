@@ -219,9 +219,30 @@ st.markdown("<div style='margin-top: 0.5rem;'></div>", unsafe_allow_html=True)
 if selected_exp is None or selected_exp.empty:
     st.markdown(
         """
-        <div class="info-card">
-          <div class="card__content">
-            Select an experience from the timeline above to view additional information
+        <div class="locked-wrap">
+          <div class="locked-layer">
+            <div class="locked-card"><div class="locked-icon">🔒</div></div>
+            <div class="locked-card"><div class="locked-icon">🔒</div></div>
+          </div>
+          <div class="locked-front">
+            <div class="info-card">
+              <div class="tools">
+                <div class="circle">
+                  <span class="red box"></span>
+                </div>
+                <div class="circle">
+                  <span class="yellow box"></span>
+                </div>
+                <div class="circle">
+                  <span class="green box"></span>
+                </div>
+              </div>
+              <div class="card__content">
+                <p class="title">Info</p>
+                <hr>
+                <p class="content">Select an experience from the timeline above to view additional information</p>
+              </div>
+            </div>
           </div>
         </div>
         """,
