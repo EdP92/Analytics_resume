@@ -3,7 +3,6 @@ from __future__ import annotations
 import plotly.express as px
 import streamlit as st
 
-from lib.background import render_network_background
 from lib.data import load_resume_data
 from lib.style import apply_base_styles
 
@@ -15,7 +14,6 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 apply_base_styles()
-render_network_background()
 
 data = load_resume_data()
 exp = data.experience
@@ -23,8 +21,7 @@ skills = data.skills.copy()
 
 back_col, _ = st.columns([1, 5])
 with back_col:
-    if st.button("← Back to Career", use_container_width=True):
-        st.switch_page("pages/1_Career_Overview.py")
+    st.page_link("pages/1_Career_Overview.py", label="← Career")
 
 st.markdown("# Skills")
 

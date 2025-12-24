@@ -4,7 +4,6 @@ from pathlib import Path
 
 import streamlit as st
 
-from lib.background import render_network_background
 from lib.data import load_resume_data
 from lib.style import apply_base_styles
 
@@ -16,7 +15,22 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 apply_base_styles()
-render_network_background()
+
+st.markdown(
+    """
+    <style>
+    #vg-tooltip-element,
+    .vega-tooltip {
+        display: none !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+for key in ("selected_experience_id", "experience_select"):
+    if key in st.session_state:
+        st.session_state.pop(key)
 
 st.title("My Analytics Resume", text_alignment="center")
 

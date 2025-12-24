@@ -1,13 +1,14 @@
 from __future__ import annotations
 
 from datetime import datetime
+import base64
+from pathlib import Path
 
 import altair as alt
 import pandas as pd
 import plotly.express as px
 import streamlit as st
 
-from lib.background import render_network_background
 from lib.data import load_resume_data
 from lib.style import apply_base_styles
 
@@ -18,7 +19,18 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 apply_base_styles()
-render_network_background()
+
+st.markdown(
+    """
+    <style>
+    #vg-tooltip-element,
+    .vega-tooltip {
+        display: block !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
 
 st.markdown(
     """
@@ -30,6 +42,10 @@ st.markdown(
 
 data = load_resume_data()
 exp = data.experience.copy()
+lock_path = Path("assets/Hidden.png")
+lock_src = ""
+if lock_path.exists():
+    lock_src = f"data:image/png;base64,{base64.b64encode(lock_path.read_bytes()).decode('utf-8')}"
 all_experiences = exp["Experience"].dropna().unique().tolist()
 
 alt.renderers.set_embed_options(actions=False)
@@ -67,7 +83,7 @@ filter_col, top_left, top_right = st.columns([0.7, 3.5, 1], gap="large")
 with filter_col:
     st.markdown("<div style='margin-top: 70px;'></div>", unsafe_allow_html=True)
     show_work = st.checkbox("Work", value=True, key="filter_work")
-    show_education = st.checkbox("Education", value=False, key="filter_education")
+    show_education = st.checkbox("Education", value=True, key="filter_education")
 
 selected_types = []
 if show_work:
@@ -218,31 +234,11 @@ st.markdown("<div style='margin-top: 0.5rem;'></div>", unsafe_allow_html=True)
 
 if selected_exp is None or selected_exp.empty:
     st.markdown(
-        """
+        f"""
         <div class="locked-wrap">
           <div class="locked-layer">
-            <div class="locked-card"><div class="locked-icon">🔒</div></div>
-            <div class="locked-card"><div class="locked-icon">🔒</div></div>
-          </div>
-          <div class="locked-front">
-            <div class="info-card">
-              <div class="tools">
-                <div class="circle">
-                  <span class="red box"></span>
-                </div>
-                <div class="circle">
-                  <span class="yellow box"></span>
-                </div>
-                <div class="circle">
-                  <span class="green box"></span>
-                </div>
-              </div>
-              <div class="card__content">
-                <p class="title">Info</p>
-                <hr>
-                <p class="content">Select an experience from the timeline above to view additional information</p>
-              </div>
-            </div>
+            <div class="locked-card left"><img class="locked-icon" src="{lock_src}" alt="Locked"></div>
+            <div class="locked-card right"><img class="locked-icon" src="{lock_src}" alt="Locked"></div>
           </div>
         </div>
         """,

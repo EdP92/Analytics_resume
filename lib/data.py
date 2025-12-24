@@ -6,7 +6,7 @@ from pathlib import Path
 import pandas as pd
 import streamlit as st
 
-DATA_PATH = Path(__file__).resolve().parent.parent / "Resume_for_analytics_v4.xlsx"
+DATA_PATH = Path(__file__).resolve().parent.parent / "data" / "Resume_for_analytics_v4.xlsx"
 
 
 @dataclass

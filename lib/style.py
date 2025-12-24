@@ -28,14 +28,19 @@ def apply_base_styles() -> None:
             color: var(--ink-1);
         }
 
+        html, body {
+            background: transparent !important;
+        }
+
         .stApp {
-            background: radial-gradient(circle at top left, var(--bg-2), var(--bg-1));
+            background: transparent !important;
         }
 
         .stApp > div {
             position: relative;
             z-index: 1;
         }
+
 
         h1, h2, h3, h4, h5, h6 {
             font-family: 'Space Grotesk', 'Segoe UI', sans-serif;
@@ -194,8 +199,8 @@ def apply_base_styles() -> None:
         }
 
         .info-card {
-            width: 190px;
-            height: 254px;
+            width: 270px;
+            height: 150px;
             margin: 0 auto;
             background-color: #f4f4f3;
             border-radius: 8px;
@@ -221,7 +226,7 @@ def apply_base_styles() -> None:
             padding: 9px;
             border-radius: 8px;
             background: #454a50;
-            margin-top: -2px;
+            margin-top: -30px;
         }
 
         .info-card .circle {
@@ -243,7 +248,7 @@ def apply_base_styles() -> None:
         }
 
         .info-card .content {
-            margin-top: 10px;
+            margin-top: -20px;
             font-size: 14px;
             color: #111111;
         }
@@ -285,22 +290,33 @@ def apply_base_styles() -> None:
             z-index: 0;
             opacity: 0.45;
             filter: blur(0.2px);
+            width: 100%;
+            justify-content: center;
+            transform: translateY(66px);
         }
 
         .locked-card {
-            width: 650px;
             height: 300px;
             border-radius: 18px;
             background: linear-gradient(145deg, #f1f5f950, #e2e8f050);
-            box-shadow: 0 20px 25px rgba(15, 23, 42, 0.12);
+            box-shadow: 0 20px 25px rgba(15, 23, 42, 0.32);
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
+        .locked-card.left {
+            width: 66.7%;
+        }
+
+        .locked-card.right {
+            width: 33.3%;
+        }
+
         .locked-icon {
-            font-size: 6rem;
-            color: #9ca3af70;
+            width: 72px;
+            height: 72px;
+            opacity: 0.35;
         }
 
         .locked-front {
