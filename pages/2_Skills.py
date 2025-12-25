@@ -19,26 +19,49 @@ data = load_resume_data()
 exp = data.experience
 skills = data.skills.copy()
 
+query_id = st.query_params.get("experience_id")
+if isinstance(query_id, list):
+    query_id = query_id[0] if query_id else None
+if query_id:
+    try:
+        st.session_state.selected_experience_id = int(query_id)
+    except ValueError:
+        st.session_state.selected_experience_id = None
+
 back_col, _ = st.columns([1, 5])
 with back_col:
-    st.page_link("pages/1_Career_Overview.py", label="← Career")
+    st.page_link("pages/1_Career_Overview.py", label="← Career Overview")
 
 st.markdown("# Skills")
 
 exp_labels = exp.assign(Label=exp["Role"] + " · " + exp["Experience"])
 options = ["All experiences"] + exp_labels["Label"].tolist()
 
-default_index = 0
+filter_key = "skills_filter"
 preselected_id = st.session_state.get("selected_experience_id")
 if preselected_id is not None:
     match = exp_labels.loc[exp_labels["ExperienceID"] == preselected_id, "Label"]
     if not match.empty:
-        default_index = options.index(match.iloc[0])
+        st.session_state[filter_key] = match.iloc[0]
+elif filter_key not in st.session_state:
+    st.session_state[filter_key] = "All experiences"
 
-selected_label = st.selectbox("Experience filter", options, index=default_index)
+def _clear_filters() -> None:
+    st.session_state.selected_experience_id = None
+    st.session_state[filter_key] = "All experiences"
+    st.query_params.clear()
+
+
+filter_col, clear_col = st.columns([4, 1])
+with filter_col:
+    selected_label = st.selectbox("Experience filter", options, key=filter_key)
+with clear_col:
+    st.button("Clear filters", use_container_width=True, on_click=_clear_filters)
+
 selected_id = None
 if selected_label != "All experiences":
     selected_id = exp_labels.loc[exp_labels["Label"] == selected_label, "ExperienceID"].iloc[0]
+st.session_state.selected_experience_id = selected_id
 
 if selected_id is not None:
     skills = skills[skills["ExperienceID"] == selected_id]

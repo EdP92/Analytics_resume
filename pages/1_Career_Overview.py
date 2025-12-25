@@ -196,6 +196,12 @@ else:
     certs_count = certs_df.loc[certs_df["ExperienceID"] == selected_id, "Name"].nunique()
 
 with top_right:
+    skills_href = "/Skills"
+    certs_href = "/Certifications"
+    if selected_id is not None:
+        skills_href = f"/Skills?experience_id={selected_id}"
+        certs_href = f"/Certifications?experience_id={selected_id}"
+
     st.markdown(
         f"""
         <div class="flip-card">
@@ -205,7 +211,7 @@ with top_right:
                     <p class="flip-value">{skills_count}</p>
                 </div>
                 <div class="flip-card-back">
-                    <a class="flip-link" href="/Skills" target="_self"><i class="fa-solid fa-magnifying-glass"></i></a>
+                    <a class="flip-link" href="{skills_href}" target="_self"><i class="fa-solid fa-magnifying-glass"></i></a>
                 </div>
             </div>
         </div>
@@ -222,7 +228,7 @@ with top_right:
                     <p class="flip-value">{certs_count}</p>
                 </div>
                 <div class="flip-card-back">
-                    <a class="flip-link" href="/Certifications" target="_self"><i class="fa-solid fa-magnifying-glass"></i></a>
+                    <a class="flip-link" href="{certs_href}" target="_self"><i class="fa-solid fa-magnifying-glass"></i></a>
                 </div>
             </div>
         </div>
@@ -237,8 +243,12 @@ if selected_exp is None or selected_exp.empty:
         f"""
         <div class="locked-wrap">
           <div class="locked-layer">
-            <div class="locked-card left"><img class="locked-icon" src="{lock_src}" alt="Locked"></div>
-            <div class="locked-card right"><img class="locked-icon" src="{lock_src}" alt="Locked"></div>
+            <div class="locked-card left locked-tip" data-tip="Please select one experience from the timeline above to show more details.">
+              <img class="locked-icon" src="{lock_src}" alt="Locked">
+            </div>
+            <div class="locked-card right locked-tip" data-tip="Please select one experience from the timeline above to show more details.">
+              <img class="locked-icon" src="{lock_src}" alt="Locked">
+            </div>
           </div>
         </div>
         """,

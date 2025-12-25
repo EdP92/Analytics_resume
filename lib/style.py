@@ -305,6 +305,37 @@ def apply_base_styles() -> None:
             justify-content: center;
         }
 
+        .locked-tip {
+            position: relative;
+        }
+
+        .locked-tip::after {
+            content: attr(data-tip);
+            position: absolute;
+            left: 50%;
+            bottom: 60%;
+            transform: translate(-50%, -12px);
+            background: #111827;
+            color: #f9fafb;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            line-height: 1.2;
+            text-align: center;
+            width: max-content;
+            max-width: 220px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            z-index: 3;
+            box-shadow: 0 12px 20px rgba(15, 23, 42, 0.18);
+        }
+
+        .locked-tip:hover::after {
+            opacity: 1;
+            transform: translate(-50%, -16px);
+        }
+
         .locked-card.left {
             width: 66.7%;
         }
@@ -468,6 +499,82 @@ def apply_base_styles() -> None:
         .text-block {
             margin: 0 0 0.6rem 0;
             font-size: 0.9rem;
+        }
+
+        .download-button {
+            position: relative;
+            border-width: 0;
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 4px;
+            z-index: 1;
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .download-button .docs {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            min-height: 40px;
+            padding: 0 10px;
+            border-radius: 4px;
+            z-index: 1;
+            background-color: #ffffff;
+            border: solid 1px #111111;
+            transition: all 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+
+        .download-button:hover {
+            box-shadow:
+                rgba(0, 0, 0, 0.25) 0px 54px 55px,
+                rgba(0, 0, 0, 0.12) 0px -12px 30px,
+                rgba(0, 0, 0, 0.12) 0px 4px 6px,
+                rgba(0, 0, 0, 0.17) 0px 12px 13px,
+                rgba(0, 0, 0, 0.09) 0px -3px 5px;
+        }
+
+        .download {
+            position: absolute;
+            inset: 5% 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            max-width: 90%;
+            margin: 0 auto;
+            z-index: -1;
+            border-radius: 4px;
+            transform: translateY(0%);
+            background-color: #01e056;
+            border: solid 1px #01e0572d;
+            transition: all 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+            color: #ffffff;
+        }
+
+        .download-button:hover .download {
+            transform: translateY(100%);
+        }
+
+        .download svg polyline,
+        .download svg line {
+            animation: docs 1s infinite;
+        }
+
+        @keyframes docs {
+            0% {
+                transform: translateY(0%);
+            }
+
+            50% {
+                transform: translateY(-15%);
+            }
+
+            100% {
+                transform: translateY(0%);
+            }
         }
 
         /* Streamlit page_link styled like "button-89" */

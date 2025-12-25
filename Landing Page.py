@@ -132,17 +132,55 @@ with col_left:
 
 
 with col_mid:
-    st.markdown("## About Me")
+    about_left, about_right = st.columns([3, 1], gap="large")
+
+    with about_left:
+        st.markdown("## About Me")
+
+
+    with about_right:
+        resume_path = Path("assets/Resume_Edoardo_dalPiaz_2025.pdf")
+        if resume_path.exists():
+            resume_b64 = base64.b64encode(resume_path.read_bytes()).decode("utf-8")
+            st.markdown(
+                f"""
+                <div style="margin-top: 5px; display: flex; justify-content: flex-end;">
+                  <a class="download-button" href="data:application/pdf;base64,{resume_b64}" download="Resume_Edoardo_dalPiaz_2025.pdf">
+                    <div class="docs">
+                      <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                      </svg>
+                      PDF 
+                    </div>
+                    <div class="download">
+                      <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                      </svg>
+                    </div>
+                  </a>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+        else:
+            st.caption("Add `assets/Resume_Edoardo_dalPiaz_2025.pdf` to enable download.")
+    
     st.markdown(
-        """
-		Passionate Data Engineer with a strong foundation in finance, focused on transforming complex data into reliable and actionable insights to support strategic decision-making. I specialize in designing scalable, analytics-ready data architectures and foster collaboration between technical teams and business stakeholders.
+    """
+    Passionate Data Engineer with a strong foundation in finance, focused on transforming complex data into reliable and actionable insights to support strategic decision-making. I specialize in designing scalable, analytics-ready data architectures and foster collaboration between technical teams and business stakeholders.
 
-		My experience spans data engineering, analytics engineering, and consulting roles across international environments, delivering end-to-end solutions from ingestion to visualization. I place strong emphasis on data quality, maintainability, and performance, ensuring that downstream analytics remain trustworthy and scalable.
+    My experience spans data engineering, analytics engineering, and consulting roles across international environments, delivering end-to-end solutions from ingestion to visualization. I place strong emphasis on data quality, maintainability, and performance, ensuring that downstream analytics remain trustworthy and scalable.
 
-		Beyond hands-on delivery, I act as a bridge between technical teams and non-technical stakeholders, helping align data initiatives with real business outcomes. I have contributed to both small, agile teams and larger, more structured data organizations, gaining perspective on different operating models and team dynamics.
+    Beyond hands-on delivery, I act as a bridge between technical teams and non-technical stakeholders, helping align data initiatives with real business outcomes. I have contributed to both small, agile teams and larger, more structured data organizations, gaining perspective on different operating models and team dynamics.
 
-		Curious by nature, I am driven by continuous learning and knowledge sharing. I enjoy refining data models, experimenting with new tools, improving analytics workflows, and enabling self-service analytics. Over time, my goal is to combine deep technical expertise with ownership, mentorship, and strategic thinking to help organizations fully realize the value of their data.
-        """
+    Curious by nature, I am driven by continuous learning and knowledge sharing. I enjoy refining data models, experimenting with new tools, improving analytics workflows, and enabling self-service analytics. Over time, my goal is to combine deep technical expertise with ownership, mentorship, and strategic thinking to help organizations fully realize the value of their data.
+    """
     )
     
     st.markdown("<div style='padding-top: 25px;'></div>", unsafe_allow_html=True)
