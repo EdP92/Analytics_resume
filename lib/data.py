@@ -14,7 +14,6 @@ class ResumeData:
     experience: pd.DataFrame
     skills: pd.DataFrame
     certifications: pd.DataFrame
-    languages: pd.DataFrame
     calendar: pd.DataFrame
 
 
@@ -43,13 +42,11 @@ def load_resume_data() -> ResumeData:
     experience = pd.read_excel(xls, "Experience")
     skills = pd.read_excel(xls, "Skills")
     certifications = pd.read_excel(xls, "Certifications")
-    languages = pd.read_excel(xls, "Languages")
     calendar = pd.read_excel(xls, "Calendar")
 
     experience = _clean_columns(experience)
     skills = _clean_columns(skills)
     certifications = _clean_columns(certifications)
-    languages = _clean_columns(languages)
     calendar = _clean_columns(calendar)
 
     experience["ExperienceID"] = pd.to_numeric(experience["ExperienceID"], errors="coerce").astype("Int64")
@@ -67,6 +64,5 @@ def load_resume_data() -> ResumeData:
         experience=experience,
         skills=skills,
         certifications=certifications,
-        languages=languages,
         calendar=calendar,
     )

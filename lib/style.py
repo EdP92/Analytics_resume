@@ -139,7 +139,7 @@ def apply_base_styles() -> None:
 
         .flip-card-front,
         .flip-card-back {
-            box-shadow: 0 8px 14px 0 rgba(0, 0, 0, 0.2);
+            box-shadow: 0 16px 24px 0 rgba(0, 0, 0, 0.2);
             position: absolute;
             display: flex;
             flex-direction: column;
@@ -148,28 +148,28 @@ def apply_base_styles() -> None:
             height: 100%;
             -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
-            border: 1px solid #fb923c;
+            border: 1px solid #cbd5f5;
             border-radius: 1rem;
         }
 
         .flip-card-front {
             background: linear-gradient(
                 120deg,
-                #fef3c7 60%,
-                #fff7ed 88%,
-                #fed7aa 40%,
-                rgba(251, 146, 60, 0.5) 48%
+                #f8fafc 55%,
+                #ffffff 85%,
+                #e5e7eb 40%,
+                rgba(209, 213, 219, 0.6) 48%
             );
-            color: #ea580c;
+            color: #111827;
         }
 
         .flip-card-back {
             background: linear-gradient(
                 120deg,
-                #fdba74 30%,
-                #fb923c 88%,
-                #fef3c7 40%,
-                #fdba74 78%
+                #9ca3af 25%,
+                #878d99 85%,
+                #e5e7eb 40%,
+                #9ca3af 78%
             );
             color: #ffffff;
             transform: rotateY(180deg);
@@ -299,10 +299,16 @@ def apply_base_styles() -> None:
             height: 300px;
             border-radius: 18px;
             background: linear-gradient(145deg, #f1f5f950, #e2e8f050);
-            box-shadow: 0 20px 25px rgba(15, 23, 42, 0.32);
+            box-shadow: 0 30px 35px rgba(15, 23, 42, 0.32);
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .locked-card:hover {
+            transform: scale(1.03);
+            box-shadow: 0 32px 38px rgba(15, 23, 42, 0.36);
         }
 
         .locked-tip {
@@ -427,7 +433,6 @@ def apply_base_styles() -> None:
         .vega-embed .legend text {
             fill: #000000 !important;
         }
-
 
         .name-small {
             font-size: 1.6rem;

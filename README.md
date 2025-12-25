@@ -19,15 +19,14 @@ A custom, interactive CV built with Streamlit. The goal is to replace Tableau wi
   - Filterable detail tables.
   - Summary charts (bar/pie).
 
-- **Languages Page**
   - Simple cards/table view.
 
 ## Data model
 
 The app currently reads from:
-- `Resume_for_analytics_v4.xlsx` (Experience, Skills, Certifications, Languages, Calendar)
+- `Resume_for_analytics_v4.xlsx` (Experience, Skills, Certifications, Calendar)
 
-Experience is treated as the fact table; Skills/Certifications are dimensions. Languages are standalone for now.
+Experience is treated as the fact table; Skills/Certifications are dimensions.
 
 ## How to run
 
