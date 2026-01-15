@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import pandas as pd
 import plotly.express as px
 import streamlit as st
 
@@ -30,6 +31,8 @@ st.markdown(
 data = load_resume_data()
 exp = data.experience
 certs = data.certifications.copy()
+if "Year_Issued" not in certs.columns:
+    certs["Year_Issued"] = pd.NA
 
 query_id = st.query_params.get("experience_id")
 if isinstance(query_id, list):
@@ -40,9 +43,13 @@ if query_id:
     except ValueError:
         st.session_state.selected_experience_id = None
 
-st.page_link("pages/1_Career_Overview.py", label="← Career Overview")
+top_left, top_mid, _ = st.columns([1.1, 2.8, 1], gap="large")
+with top_left:
+    st.page_link("pages/1_Career_Overview.py", label="← Career Overview")
+with top_mid:
+    st.markdown("# Certifications", text_alignment="center")
 
-st.markdown("# Certifications")
+st.markdown("<div style='margin-top: -8px;'></div>", unsafe_allow_html=True)
 
 exp_labels = exp.assign(Label=exp["Role"] + " · " + exp["Experience"])
 options = ["All experiences"] + exp_labels["Label"].tolist()
@@ -124,8 +131,10 @@ with left:
         on="ExperienceID",
         how="left",
     )
-    detail = detail[["Experience", "Role", "Name", "Provider", "Type", "Link"]]
+    detail = detail[["Type", "Provider", "Name", "Year_Issued", "Link"]]
     column_config = {}
+    if "Year_Issued" in detail.columns:
+        column_config["Year_Issued"] = st.column_config.NumberColumn("Year Issued")
     if "Link" in detail.columns:
         column_config["Link"] = st.column_config.LinkColumn("Link", display_text="🔗")
     st.dataframe(
@@ -136,31 +145,25 @@ with left:
     )
 
 with right:
-    st.markdown("### Certification types")
-    by_type = certs.groupby("Type", as_index=False)["Name"].nunique()
-    if not by_type.empty:
-        fig = px.pie(
-            by_type,
-            values="Name",
-            names="Type",
-            color_discrete_sequence=px.colors.qualitative.Set2,
-        )
-        fig.update_layout(height=180, margin=dict(l=10, r=10, t=10, b=10))
-        st.plotly_chart(fig, use_container_width=True)
-
-    st.markdown("### Providers")
-    by_provider = certs.groupby("Provider", as_index=False)["Name"].nunique().sort_values("Name", ascending=False)
-    if not by_provider.empty:
-        bar = px.bar(
-            by_provider,
+    st.markdown("### Certifications by type & provider")
+    by_type_provider = certs.groupby(["Type", "Provider"], as_index=False)["Name"].nunique()
+    if not by_type_provider.empty:
+        stacked = px.bar(
+            by_type_provider,
             x="Name",
-            y="Provider",
-            orientation="h",
+            y="Type",
             color="Provider",
+            orientation="h",
             color_discrete_sequence=px.colors.qualitative.Pastel,
         )
-        bar.update_layout(height=260, margin=dict(l=10, r=10, t=10, b=10), xaxis_title="Count")
-        bar.update_traces(showlegend=False)
-        st.plotly_chart(bar, use_container_width=True)
+        stacked.update_layout(
+            height=360,
+            margin=dict(l=10, r=10, t=10, b=40),
+            xaxis_title=None,
+            yaxis_title=None,
+            legend_title_text=None,
+            showlegend=False,
+        )
+        st.plotly_chart(stacked, use_container_width=True)
     else:
         st.info("No certifications match the selected filters.")

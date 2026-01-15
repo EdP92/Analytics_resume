@@ -108,7 +108,7 @@ timeline_chart = (
     alt.Chart(exp_view)
     .mark_bar(size=50, stroke="#25272c", strokeWidth=1)
     .encode(
-        x=alt.X("Start_Date:T", axis=alt.Axis(format="%Y-%m", title=None)),
+        x=alt.X("Start_Date:T", axis=alt.Axis(format="%Y", title=None)),
         x2="End_Date_Filled:T",
         y=alt.Y("Type:N", sort=["Education", "Work"], title=None),
         color=alt.Color(
