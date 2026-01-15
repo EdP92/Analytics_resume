@@ -1,6 +1,10 @@
 from __future__ import annotations
 
+import hashlib
+
+import pandas as pd
 import plotly.express as px
+import plotly.graph_objects as go
 import streamlit as st
 
 from lib.data import load_resume_data
@@ -40,9 +44,13 @@ if query_id:
     except ValueError:
         st.session_state.selected_experience_id = None
 
-st.page_link("pages/1_Career_Overview.py", label="← Career Overview")
+top_left, top_mid, _ = st.columns([1.1, 2.8, 1], gap="large")
+with top_left:
+    st.page_link("pages/1_Career_Overview.py", label="← Career Overview")
+with top_mid:
+    st.markdown("# Skills", text_alignment="center")
 
-st.markdown("# Skills")
+st.markdown("<div style='margin-top: -8px;'></div>", unsafe_allow_html=True)
 
 exp_labels = exp.assign(Label=exp["Role"] + " · " + exp["Experience"])
 options = ["All experiences"] + exp_labels["Label"].tolist()
@@ -141,32 +149,116 @@ with left:
         }
     )
     detail = detail[["Experience", "Role", "Team", "Category", "Skill", "Level", "Years Used"]]
-    st.dataframe(detail, use_container_width=True, hide_index=True)
+    st.dataframe(detail, use_container_width=True, hide_index=True, height=520)
 
 with right:
-    st.markdown("### Category split")
-    if not skills_by_cat.empty:
-        pie = px.pie(
-            skills_by_cat,
-            values="Skill",
-            names="Category",
-            color_discrete_sequence=px.colors.qualitative.Set2,
-        )
-        pie.update_layout(height=180, margin=dict(l=10, r=10, t=10, b=10))
-        st.plotly_chart(pie, use_container_width=True)
+    st.markdown("### Skills radar")
+    if not skills.empty:
+        levels = ["Basic", "Intermediate", "Advanced"]
+        level_map = {lvl.lower(): idx for idx, lvl in enumerate(levels, start=1)}
+        skills["level_norm"] = skills["Level"].astype(str).str.strip().str.lower()
+        skills = skills[skills["level_norm"].isin(level_map)]
+        skills["level_idx"] = skills["level_norm"].map(level_map)
 
-    st.markdown("### Skills list & years of usage")
-    if not skills_by_name.empty:
-        fig = px.bar(
-            skills_by_name,
-            x="Years_Used",
-            y="Skill",
-            orientation="h",
-            color="Skill",
-            color_discrete_sequence=px.colors.qualitative.Set3,
+        skills = (
+            skills.groupby(["Skill", "Category", "Level", "level_norm", "level_idx"], as_index=False)[
+                "Years_Used"
+            ]
+            .sum()
         )
-        fig.update_layout(height=260, margin=dict(l=10, r=10, t=10, b=10), xaxis_title="Years")
-        fig.update_traces(showlegend=False)
-        st.plotly_chart(fig, use_container_width=True)
+
+        categories = sorted(skills["Category"].dropna().unique().tolist())
+        span = 360 / max(len(categories), 1)
+
+        def _stable_jitter(value: str) -> float:
+            digest = hashlib.md5(value.encode("utf-8")).hexdigest()
+            return (int(digest[:8], 16) / 0xFFFFFFFF) - 0.5
+
+        max_years_by_level = skills.groupby("level_idx")["Years_Used"].max().to_dict()
+        max_years_overall = skills["Years_Used"].max() or 1
+
+        def _radius(row: pd.Series) -> float:
+            base = row["level_idx"] - 1
+            max_years = max_years_by_level.get(row["level_idx"], 1) or 1
+            return base + 0.15 + (row["Years_Used"] / max_years) * 0.7
+
+        skills["r"] = skills.apply(_radius, axis=1)
+        skills["size"] = 8 + (skills["Years_Used"] / max_years_overall) * 10
+        skills["theta"] = skills.apply(
+            lambda r: (
+                categories.index(r["Category"]) * span
+                + _stable_jitter(str(r["Skill"])) * (span * 0.8)
+            ),
+            axis=1,
+        )
+
+        palette = px.colors.qualitative.Set2
+        color_map = {
+            category: palette[i % len(palette)] for i, category in enumerate(categories)
+        }
+        skills["color"] = skills["Category"].map(color_map)
+
+        fig = go.Figure()
+        for category, group in skills.groupby("Category"):
+            fig.add_trace(
+                go.Scatterpolar(
+                    r=group["r"],
+                    theta=group["theta"],
+                    mode="markers",
+                    name=category,
+                    marker=dict(
+                        size=group["size"],
+                        color=group["color"].iloc[0],
+                        line=dict(color="rgba(17,24,39,0.35)", width=0.6),
+                    ),
+                    hovertemplate=(
+                        "<b>%{customdata[0]}</b><br>"
+                        "Category: %{customdata[1]}<br>"
+                        "Level: %{customdata[2]}<br>"
+                        "Years: %{customdata[3]}<extra></extra>"
+                    ),
+                    customdata=group[["Skill", "Category", "Level", "Years_Used"]],
+                )
+            )
+
+        for idx, cat in enumerate(categories):
+            angle = (idx + 0.5) * span
+            fig.add_trace(
+                go.Scatterpolar(
+                    r=[2.1],
+                    theta=[angle],
+                    mode="text",
+                    text=[f"<b>{cat}</b>"],
+                    textfont=dict(size=12, color=color_map[cat], family="IBM Plex Sans"),
+                    textposition="middle center",
+                    hoverinfo="skip",
+                    showlegend=False,
+                )
+            )
+
+        fig.update_layout(
+            height=520,
+            margin=dict(l=0, r=0, t=10, b=0),
+            polar=dict(
+                radialaxis=dict(
+                    range=[0, 3.2],
+                    tickvals=[0.5, 1.5, 2.5],
+                    ticktext=levels,
+                    tickfont=dict(size=12, color="#4b5563"),
+                    gridcolor="#e5e7eb",
+                    linecolor="#d1d5db",
+                ),
+                angularaxis=dict(
+                    showticklabels=False,
+                    gridcolor="#f3f4f6",
+                    linecolor="#e5e7eb",
+                ),
+                bgcolor="rgba(0,0,0,0)",
+            ),
+            showlegend=False,
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor="rgba(0,0,0,0)",
+        )
+        st.plotly_chart(fig, use_container_width=True, config={"displayModeBar": False})
     else:
         st.info("No skills match the selected filters.")
