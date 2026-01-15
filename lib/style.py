@@ -46,6 +46,15 @@ def apply_base_styles() -> None:
             font-family: 'Space Grotesk', 'Segoe UI', sans-serif;
             letter-spacing: -0.02em;
             color: var(--ink-1);
+            margin: 0 0 0.6rem 0;
+        }
+
+        h3 {
+            margin-bottom: 0.45rem;
+        }
+
+        p, ul, ol {
+            margin: 0 0 0.8rem 0;
         }
 
         .hero-card {
@@ -367,19 +376,63 @@ def apply_base_styles() -> None:
         }
 
         .stButton > button {
-            background: #ffffff;
-            color: #111827;
-            border: 1px solid #d1d5db;
+            --b: 3px;
+            --s: 0.45em;
+            --color: #373B44;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: calc(0.4em + var(--s)) calc(2.3em + var(--s));
+            color: var(--color);
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            --_p: var(--s);
+            background:
+                conic-gradient(from 90deg at var(--b) var(--b),
+                #0000 90deg,
+                var(--color) 0)
+                var(--_p) var(--_p) /
+                calc(100% - var(--b) - 2 * var(--_p))
+                calc(100% - var(--b) - 2 * var(--_p));
+            transition: 0.3s linear, color 0s, background-color 0s;
+            outline: var(--b) solid #0000;
+            outline-offset: 0.6em;
+            border: 0;
+            border-radius: 0;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+            white-space: nowrap;
         }
 
-        .stButton > button:hover {
-            background: #f3f4f6;
-            color: #111827;
-            border-color: #9ca3af;
+        .stButton > button:hover,
+        .stButton > button:focus-visible {
+            --_p: 0px;
+            outline-color: var(--color);
+            outline-offset: 0.05em;
+        }
+
+        .stButton > button:active {
+            background: var(--color);
+            color: #fff;
         }
 
         .stButton > button * {
-            color: #111827 !important;
+            color: inherit !important;
+        }
+
+        .icon-clear .stButton > button {
+            --b: 2px;
+            --s: 0.2em;
+            width: 30px;
+            height: 30px;
+            min-width: 30px;
+            padding: 0;
+            font-size: 20px;
+            line-height: 1;
+            font-weight: 700;
+            color: #7f1d1d;
         }
 
 
