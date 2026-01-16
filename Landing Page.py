@@ -144,7 +144,7 @@ with col_mid:
             resume_b64 = base64.b64encode(resume_path.read_bytes()).decode("utf-8")
             st.markdown(
                 f"""
-                <div style="margin-top: 5px; display: flex; justify-content: flex-end;">
+                <div style="margin-top: -83px; margin-right: 40px; display: flex; justify-content: flex-end;">
                   <a class="download-button" href="data:application/pdf;base64,{resume_b64}" download="Resume_Edoardo_dalPiaz_2025.pdf">
                     <div class="docs">
                       <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -172,15 +172,14 @@ with col_mid:
             st.caption("Add `assets/Resume_Edoardo_dalPiaz_2025.pdf` to enable download.")
     
     st.markdown(
-    """
-    Passionate Data Engineer with a strong foundation in finance, focused on transforming complex data into reliable and actionable insights to support strategic decision-making. I specialize in designing scalable, analytics-ready data architectures and foster collaboration between technical teams and business stakeholders.
-
-    My experience spans data engineering, analytics engineering, and consulting roles across international environments, delivering end-to-end solutions from ingestion to visualization. I place strong emphasis on data quality, maintainability, and performance, ensuring that downstream analytics remain trustworthy and scalable.
-
-    Beyond hands-on delivery, I act as a bridge between technical teams and non-technical stakeholders, helping align data initiatives with real business outcomes. I have contributed to both small, agile teams and larger, more structured data organizations, gaining perspective on different operating models and team dynamics.
-
-    Curious by nature, I am driven by continuous learning and knowledge sharing. I enjoy refining data models, experimenting with new tools, improving analytics workflows, and enabling self-service analytics. Over time, my goal is to combine deep technical expertise with ownership, mentorship, and strategic thinking to help organizations fully realize the value of their data.
-    """
+        """
+        <div style="font-size: 1.125rem; line-height: 1.7;">
+          <p>Passionate Data Engineer with a strong foundation in finance, focused on transforming complex data into reliable, actionable insights for decision-making. I design scalable, analytics-ready data architectures and foster collaboration between technical teams and business stakeholders.</p>
+          <p>My experience spans data engineering, analytics engineering, and consulting roles across international environments, delivering end-to-end solutions from ingestion to visualization. I emphasize data quality, maintainability, and performance so analytics stay trustworthy and scalable.</p>
+          <p>Beyond delivery, I act as a bridge between technical teams and non-technical stakeholders, aligning data initiatives with real business outcomes. I enjoy refining data models, experimenting with new tools, improving analytics workflows, and enabling self-service analytics.</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
     )
     
     st.markdown("<div style='padding-top: 25px;'></div>", unsafe_allow_html=True)

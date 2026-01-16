@@ -7,6 +7,7 @@ from pathlib import Path
 import altair as alt
 import pandas as pd
 import plotly.express as px
+import plotly.graph_objects as go
 import streamlit as st
 
 from lib.data import load_resume_data
@@ -42,10 +43,10 @@ st.markdown(
 
 data = load_resume_data()
 exp = data.experience.copy()
-lock_path = Path("assets/Hidden.png")
-lock_src = ""
-if lock_path.exists():
-    lock_src = f"data:image/png;base64,{base64.b64encode(lock_path.read_bytes()).decode('utf-8')}"
+empty_path = Path("assets/career_unselect.png")
+empty_src = ""
+if empty_path.exists():
+    empty_src = f"data:image/png;base64,{base64.b64encode(empty_path.read_bytes()).decode('utf-8')}"
 all_experiences = exp["Experience"].dropna().unique().tolist()
 
 alt.renderers.set_embed_options(actions=False)
@@ -67,7 +68,7 @@ with col_left:
     st.page_link("Landing Page.py", label="← Landing Page")
 
 with col_mid:
-    st.markdown("# Career Overview", text_alignment="center")
+    st.markdown("# Career Timeline", text_alignment="center")
 
 exp_view = exp[(exp["Start_Date"] <= range_end) & (exp["End_Date_Filled"] >= range_start)].copy()
 exp_view = exp_view.sort_values(["Type", "Start_Date"]).reset_index(drop=True)
@@ -204,16 +205,10 @@ with top_right:
 
     st.markdown(
         f"""
-        <div class="flip-card">
-            <div class="flip-card-inner">
-                <div class="flip-card-front">
-                    <p class="flip-title">Skills</p>
-                    <p class="flip-value">{skills_count}</p>
-                </div>
-                <div class="flip-card-back">
-                    <a class="flip-link" href="{skills_href}" target="_self"><i class="fa-solid fa-magnifying-glass"></i></a>
-                </div>
-            </div>
+        <div style="margin-top: -68px; text-align: center;">
+          <div style="font-size: 0.85rem; color: #6b7280; text-transform: uppercase; letter-spacing: 0.18em; margin: 0;"># Skills</div>
+          <div style="font-size: 4rem; font-weight: 700; margin: -16px 0 0;">{skills_count}</div>
+          <a class="nav-button" href="{skills_href}" target="_self" style="margin-top: -16px; padding: calc(0.4em + var(--s)) calc(2.76em + var(--s));">Skills →</a>
         </div>
         """,
         unsafe_allow_html=True,
@@ -221,16 +216,10 @@ with top_right:
 
     st.markdown(
         f"""
-        <div class="flip-card">
-            <div class="flip-card-inner">
-                <div class="flip-card-front">
-                    <p class="flip-title">Certifications</p>
-                    <p class="flip-value">{certs_count}</p>
-                </div>
-                <div class="flip-card-back">
-                    <a class="flip-link" href="{certs_href}" target="_self"><i class="fa-solid fa-magnifying-glass"></i></a>
-                </div>
-            </div>
+        <div style="margin-top: 38px; text-align: center;">
+          <div style="font-size: 0.85rem; color: #6b7280; text-transform: uppercase; letter-spacing: 0.18em; margin: 0;"># Certifications</div>
+          <div style="font-size: 4rem; font-weight: 700; margin: -16px 0 0;">{certs_count}</div>
+          <a class="nav-button" href="{certs_href}" target="_self" style="margin-top: -16px; padding: calc(0.4em + var(--s)) calc(2.76em + var(--s));">Certs →</a>
         </div>
         """,
         unsafe_allow_html=True,
@@ -238,27 +227,11 @@ with top_right:
 
 st.markdown("<div style='margin-top: 0.5rem;'></div>", unsafe_allow_html=True)
 
-if selected_exp is None or selected_exp.empty:
-    st.markdown(
-        f"""
-        <div class="locked-wrap">
-          <div class="locked-layer">
-            <div class="locked-card left locked-tip" data-tip="Please select one experience from the timeline above to show more details.">
-              <img class="locked-icon" src="{lock_src}" alt="Locked">
-            </div>
-            <div class="locked-card right locked-tip" data-tip="Please select one experience from the timeline above to show more details.">
-              <img class="locked-icon" src="{lock_src}" alt="Locked">
-            </div>
-          </div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-else:
-    row = selected_exp.iloc[0]
-    detail_left, detail_right = st.columns([2, 1], gap="large")
+detail_left, detail_right = st.columns([2, 1], gap="large")
 
-    with detail_left:
+with detail_left:
+    if selected_exp is not None and not selected_exp.empty:
+        row = selected_exp.iloc[0]
         st.markdown(f"### {row['Experience']} · {row['Role']}")
         st.markdown(f"**Location:** {row['Location']}")
         st.markdown(row["Description"])
@@ -267,9 +240,23 @@ else:
             st.markdown("**Highlights**")
             bullets = [t.strip("▪ ") for t in tasks.split("\n") if t.strip()]
             st.markdown("\n".join([f"- {b}" for b in bullets]))
+    else:
+        st.markdown(
+            f"""
+            <div style="text-align:center; padding: 40px 20px 10px;">
+              <img src="{empty_src}" alt="Select experience" style="max-width: 780px; width: 90%; opacity: 0.85;transform: translateY(-110px); filter: brightness(0.98);" />
+              <div style="margin-top: 16px; font-size: 1.5rem; color: #6b7280; transform: translateY(-410px);">
+                Select an experience from the timeline above to show additional information
+              </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
 
-    with detail_right:
-        st.markdown("<div style='margin-top: 68px;'></div>", unsafe_allow_html=True)
+with detail_right:
+    st.markdown("<div style='margin-top: 68px;'></div>", unsafe_allow_html=True)
+    if selected_exp is not None and not selected_exp.empty:
+        row = selected_exp.iloc[0]
         map_df = pd.DataFrame(
             {
                 "lat": [row["Latitude"]],
@@ -277,27 +264,49 @@ else:
                 "label": [row["Location"]],
             }
         ).dropna()
-        if not map_df.empty:
-            map_fig = px.scatter_mapbox(
-                map_df,
-                lat="lat",
-                lon="lon",
-                hover_name="label",
-                zoom=5,
-                height=260,
-            )
-            map_fig.update_layout(
-                mapbox_style="carto-positron",
-                margin=dict(l=0, r=0, t=0, b=0),
-                hovermode="closest",
-            )
-            map_fig.update_traces(
-                marker=dict(size=16, color="#EB7F21", opacity=0.9),
-                
-            )
+    else:
+        map_df = pd.DataFrame(columns=["lat", "lon", "label"])
 
-            st.plotly_chart(
-                map_fig,
-                use_container_width=True,
-                config={"displayModeBar": False},
+    if map_df.empty:
+        map_fig = go.Figure(
+            go.Scattermapbox(lat=[], lon=[], mode="markers")
+        )
+        map_fig.update_layout(
+            mapbox=dict(
+                style="open-street-map",
+                center=dict(lat=48.5, lon=9.0),
+                zoom=1.8,
             )
+        )
+    else:
+        map_fig = px.scatter_mapbox(
+            map_df,
+            lat="lat",
+            lon="lon",
+            hover_name="label",
+            zoom=5,
+        )
+        map_fig.update_traces(
+            marker=dict(size=14, color="#7D1D00", opacity=0.9)
+        )
+        map_fig.update_layout(
+            mapbox=dict(
+                style="open-street-map",
+                center=dict(lat=float(map_df["lat"].iloc[0]), lon=float(map_df["lon"].iloc[0])),
+                zoom=4,
+            )
+        )
+
+    map_fig.update_layout(
+        height=260,
+        margin=dict(l=0, r=0, t=0, b=0),
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
+        hovermode="closest",
+    )
+
+    st.plotly_chart(
+        map_fig,
+        use_container_width=True,
+        config={"displayModeBar": False, "scrollZoom": True},
+    )

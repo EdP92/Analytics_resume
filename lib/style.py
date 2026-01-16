@@ -571,6 +571,12 @@ def apply_base_styles() -> None:
             z-index: 1;
             display: inline-block;
             text-decoration: none;
+            box-shadow:
+                rgba(0, 0, 0, 0.25) 0px 54px 55px,
+                rgba(0, 0, 0, 0.12) 0px -12px 30px,
+                rgba(0, 0, 0, 0.12) 0px 4px 6px,
+                rgba(0, 0, 0, 0.17) 0px 12px 13px,
+                rgba(0, 0, 0, 0.09) 0px -3px 5px;
         }
 
         .download-button .docs {
@@ -588,12 +594,7 @@ def apply_base_styles() -> None:
         }
 
         .download-button:hover {
-            box-shadow:
-                rgba(0, 0, 0, 0.25) 0px 54px 55px,
-                rgba(0, 0, 0, 0.12) 0px -12px 30px,
-                rgba(0, 0, 0, 0.12) 0px 4px 6px,
-                rgba(0, 0, 0, 0.17) 0px 12px 13px,
-                rgba(0, 0, 0, 0.09) 0px -3px 5px;
+            filter: brightness(0.99);
         }
 
         .download {
@@ -636,8 +637,9 @@ def apply_base_styles() -> None:
             }
         }
 
-        /* Streamlit page_link styled like "button-89" */
-        div[data-testid="stPageLink"] a {
+        /* Streamlit page_link + custom nav-button styled like "button-89" */
+        div[data-testid="stPageLink"] a,
+        .nav-button {
         /* Button-89 variables */
         --b: 3px;          /* border thickness */
         --s: 0.45em;       /* size of the corner */
@@ -681,7 +683,8 @@ def apply_base_styles() -> None:
         }
 
         /* Ensure Streamlit's nested label elements inherit styles */
-        div[data-testid="stPageLink"] a * {
+        div[data-testid="stPageLink"] a *,
+        .nav-button * {
         color: inherit !important;
         fill: currentColor !important;
         font-size: inherit !important;
@@ -691,10 +694,18 @@ def apply_base_styles() -> None:
 
         /* Hover / keyboard focus */
         div[data-testid="stPageLink"] a:hover,
-        div[data-testid="stPageLink"] a:focus-visible {
+        div[data-testid="stPageLink"] a:focus-visible,
+        .nav-button:hover,
+        .nav-button:focus-visible {
         --_p: 0px;
         outline-color: var(--color);
         outline-offset: 0.05em;
+        }
+
+        div[data-testid="stPageLink"] a:active,
+        .nav-button:active {
+        background: var(--color);
+        color: #fff !important;
         }
 
         /* Active (mouse down) */
