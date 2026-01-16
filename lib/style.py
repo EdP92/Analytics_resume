@@ -308,7 +308,7 @@ def apply_base_styles() -> None:
             height: 300px;
             border-radius: 18px;
             background: linear-gradient(145deg, #f1f5f950, #e2e8f050);
-            box-shadow: 0 30px 35px rgba(15, 23, 42, 0.32);
+            box-shadow: 0 -24px 32px rgba(15, 23, 42, 0.28);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -317,7 +317,7 @@ def apply_base_styles() -> None:
 
         .locked-card:hover {
             transform: scale(1.03);
-            box-shadow: 0 32px 38px rgba(15, 23, 42, 0.36);
+            box-shadow: 0 -28px 36px rgba(15, 23, 42, 0.32);
         }
 
         .locked-tip {
@@ -362,7 +362,8 @@ def apply_base_styles() -> None:
         .locked-icon {
             width: 72px;
             height: 72px;
-            opacity: 0.35;
+            opacity: 0.75;
+            transform: translateY(-15px);
         }
 
         .locked-front {

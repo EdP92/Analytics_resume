@@ -52,15 +52,21 @@ with top_mid:
 st.markdown("<div style='margin-top: -8px;'></div>", unsafe_allow_html=True)
 
 exp_labels = exp.assign(Label=exp["Role"] + " · " + exp["Experience"])
-options = ["All experiences"] + exp_labels["Label"].tolist()
+label_to_ids = (
+    exp_labels.groupby("Label")["ExperienceID"].apply(list).to_dict()
+)
+options = ["All experiences"] + list(label_to_ids.keys())
 
 filter_key = "certs_filter"
 if query_id and filter_key not in st.session_state:
     preselected_id = st.session_state.get("selected_experience_id")
     if preselected_id is not None:
-        match = exp_labels.loc[exp_labels["ExperienceID"] == preselected_id, "Label"]
-        if not match.empty:
-            st.session_state[filter_key] = match.iloc[0]
+        match_label = next(
+            (label for label, ids in label_to_ids.items() if preselected_id in ids),
+            None,
+        )
+        if match_label:
+            st.session_state[filter_key] = match_label
 elif filter_key not in st.session_state:
     st.session_state[filter_key] = "All experiences"
 
@@ -114,13 +120,13 @@ with row_left:
         st.button("×", on_click=_clear_filters, key="certs_clear", help="Clear filters")
         st.markdown("</div>", unsafe_allow_html=True)
 
-selected_id = None
+selected_ids: list[int] = []
 if selected_label != "All experiences":
-    selected_id = exp_labels.loc[exp_labels["Label"] == selected_label, "ExperienceID"].iloc[0]
-st.session_state.selected_experience_id = selected_id
+    selected_ids = label_to_ids.get(selected_label, [])
+st.session_state.selected_experience_id = selected_ids[0] if selected_ids else None
 
-if selected_id is not None:
-    certs = certs[certs["ExperienceID"] == selected_id]
+if selected_ids:
+    certs = certs[certs["ExperienceID"].isin(selected_ids)]
 
 left, right = st.columns([2, 1], gap="large")
 
