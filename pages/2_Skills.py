@@ -148,14 +148,15 @@ with left:
     detail = detail.rename(
         columns={
             "Experience": "Experience",
-            "Role": "Role",
-            "Team": "Team",
+            #"Role": "Role",
+            #"Team": "Team",
             "Skill": "Skill",
             "Level": "Level",
             "Years_Used": "Years Used",
         }
     )
-    detail = detail[["Experience", "Role", "Team", "Category", "Skill", "Level", "Years Used"]]
+    detail = detail[[#"Role", "Team", 
+                        "Experience", "Category", "Skill", "Level", "Years Used"]]
     st.dataframe(detail, use_container_width=True, hide_index=True, height=520)
 
 with right:
