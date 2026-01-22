@@ -10,6 +10,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
 
+from lib.auth import require_auth
 from lib.data import load_resume_data
 from lib.style import apply_base_styles
 
@@ -20,6 +21,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 apply_base_styles()
+require_auth()
 
 st.markdown(
     """
@@ -197,33 +199,34 @@ else:
     certs_count = certs_df.loc[certs_df["ExperienceID"] == selected_id, "Name"].nunique()
 
 with top_right:
-    skills_href = "/Skills"
-    certs_href = "/Certifications"
     if selected_id is not None:
-        skills_href = f"/Skills?experience_id={selected_id}"
-        certs_href = f"/Certifications?experience_id={selected_id}"
+        st.session_state.selected_experience_id = selected_id
 
     st.markdown(
         f"""
-        <div style="margin-top: -68px; text-align: center;">
+        <div style="margin-top: -68px; display:flex; flex-direction:column; align-items:flex-end; text-align:right; gap: 0;">
           <div style="font-size: 0.85rem; color: #6b7280; text-transform: uppercase; letter-spacing: 0.18em; margin: 0;"># Skills</div>
           <div style="font-size: 4rem; font-weight: 700; margin: -16px 0 0;">{skills_count}</div>
-          <a class="nav-button" href="{skills_href}" target="_self" style="margin-top: -16px; padding: calc(0.4em + var(--s)) calc(2.76em + var(--s));">Skills →</a>
         </div>
         """,
         unsafe_allow_html=True,
     )
+    btn_spacer, btn_col = st.columns([1, 2.5])
+    with btn_col:
+        st.page_link("pages/2_Skills.py", label="Skills →")
 
     st.markdown(
         f"""
-        <div style="margin-top: 38px; text-align: center;">
+        <div style="margin-top: 38px; display:flex; flex-direction:column; align-items:flex-end; text-align:right; gap: 0;">
           <div style="font-size: 0.85rem; color: #6b7280; text-transform: uppercase; letter-spacing: 0.18em; margin: 0;"># Certifications</div>
           <div style="font-size: 4rem; font-weight: 700; margin: -16px 0 0;">{certs_count}</div>
-          <a class="nav-button" href="{certs_href}" target="_self" style="margin-top: -16px; padding: calc(0.4em + var(--s)) calc(2.76em + var(--s));">Certs →</a>
         </div>
         """,
         unsafe_allow_html=True,
     )
+    btn_spacer, btn_col = st.columns([1, 2.5])
+    with btn_col:
+        st.page_link("pages/3_Certifications.py", label="Certs →")
 
 st.markdown("<div style='margin-top: 0.5rem;'></div>", unsafe_allow_html=True)
 
@@ -246,7 +249,7 @@ with detail_left:
             <div style="text-align:center; padding: 40px 20px 10px;">
               <img src="{empty_src}" alt="Select experience" style="max-width: 780px; width: 90%; opacity: 0.85;transform: translateY(-110px); filter: brightness(0.98);" />
               <div style="margin-top: 16px; font-size: 1.5rem; color: #6b7280; transform: translateY(-410px);">
-                Select an experience from the timeline above to show additional information
+                Select one experience from the timeline above to show additional information
               </div>
             </div>
             """,

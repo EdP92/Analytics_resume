@@ -6,6 +6,7 @@ import streamlit as st
 
 from lib.data import load_resume_data
 from lib.style import apply_base_styles
+from lib.auth import authenticate, logout
 
 
 st.set_page_config(
@@ -15,6 +16,9 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 apply_base_styles()
+
+if "authenticated" not in st.session_state:
+    st.session_state.authenticated = False
 
 st.markdown(
     """
@@ -31,6 +35,68 @@ st.markdown(
 for key in ("selected_experience_id", "experience_select"):
     if key in st.session_state:
         st.session_state.pop(key)
+
+if not st.session_state.authenticated:
+    st.markdown(
+        """
+        <style>
+        .login-card {
+            background: transparent;
+            border-radius: 0;
+            padding: 0;
+            box-shadow: none;
+            max-width: 420px;
+            margin: 10px auto 0;
+        }
+        .login-card hr {
+            border: none;
+            border-top: 2px solid #d1d5db;
+            margin: 10px 0 16px;
+        }
+        .login-card label {
+            font-weight: 600;
+            color: #374151;
+        }
+        .login-card .stForm {
+            width: 100%;
+        }
+        .login-card [data-testid="stTextInput"] {
+            width: 100%;
+        }
+        .login-card [data-testid="stForm"] {
+            margin-top: 0;
+        }
+        .login-card [data-testid="stTextInput"] > div > div {
+            background: #f3f4f6;
+        }
+        .login-card [data-testid="stForm"] small,
+        .login-card [data-testid="stTextInput"] small {
+            display: none !important;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+    icon_src = ""
+    left, center, right = st.columns([1.2, 0.9, 1.2])
+    with center:
+        st.markdown('<div class="login-card">', unsafe_allow_html=True)
+        st.markdown("## Sign In")
+        st.markdown("<hr />", unsafe_allow_html=True)
+        with st.form("login_form", clear_on_submit=False):
+            st.markdown('<div class="login-fields">', unsafe_allow_html=True)
+            username = st.text_input("Username")
+            password = st.text_input("Password", type="password")
+            submitted = st.form_submit_button("Sign in")
+            st.markdown("</div>", unsafe_allow_html=True)
+        if submitted:
+            if authenticate(username, password):
+                st.success("Welcome back!")
+                st.rerun()
+            else:
+                st.error("Invalid credentials.")
+        st.markdown("</div>", unsafe_allow_html=True)
+    st.stop()
 
 st.title("My Analytics Resume", text_alignment="center")
 
