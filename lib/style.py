@@ -8,8 +8,8 @@ def apply_base_styles() -> None:
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=IBM+Plex+Sans:wght@300;400;500&display=swap');
 
         :root {
-            --bg-1: #ffeaa6;
-            --bg-2: #f8faf6;
+            --bg-1: #f6f7f9;
+            --bg-2: #eef1f5;
             --ink-1: #111111;
             --ink-2: #5a5a5a;
             --ink-3: #9ca3af;
@@ -28,12 +28,25 @@ def apply_base_styles() -> None:
             color: var(--ink-1);
         }
 
-        html, body {
+        html, body,
+        .stApp,
+        [data-testid="stAppViewContainer"] {
             background: transparent !important;
         }
 
-        .stApp {
+        .bg-gradient {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            background: radial-gradient(circle at top left, var(--bg-2) 0%, #f9fafb 45%, var(--bg-1) 100%);
+        }
+
+        section.main,
+        .block-container {
             background: transparent !important;
+            position: relative;
+            z-index: 1;
         }
 
         .stApp > div {
@@ -723,3 +736,4 @@ def apply_base_styles() -> None:
         """,
         unsafe_allow_html=True,
     )
+    st.markdown('<div class="bg-gradient"></div>', unsafe_allow_html=True)

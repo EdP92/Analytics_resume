@@ -7,6 +7,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
 
+from lib.auth import require_auth
 from lib.data import load_resume_data
 from lib.style import apply_base_styles
 
@@ -18,6 +19,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 apply_base_styles()
+require_auth()
 
 st.markdown(
     """
@@ -59,15 +61,14 @@ label_to_ids = (
 options = ["All experiences"] + list(label_to_ids.keys())
 
 filter_key = "skills_filter"
-if query_id and filter_key not in st.session_state:
-    preselected_id = st.session_state.get("selected_experience_id")
-    if preselected_id is not None:
-        match_label = next(
-            (label for label, ids in label_to_ids.items() if preselected_id in ids),
-            None,
-        )
-        if match_label:
-            st.session_state[filter_key] = match_label
+preselected_id = st.session_state.get("selected_experience_id")
+if preselected_id is not None and filter_key not in st.session_state:
+    match_label = next(
+        (label for label, ids in label_to_ids.items() if preselected_id in ids),
+        None,
+    )
+    if match_label:
+        st.session_state[filter_key] = match_label
 elif filter_key not in st.session_state:
     st.session_state[filter_key] = "All experiences"
 
