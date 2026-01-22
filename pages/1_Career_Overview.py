@@ -85,8 +85,8 @@ filter_col, top_left, top_right = st.columns([0.7, 3.5, 1], gap="large")
 
 with filter_col:
     st.markdown("<div style='margin-top: 70px;'></div>", unsafe_allow_html=True)
-    show_work = st.checkbox("Work", value=True, key="filter_work")
-    show_education = st.checkbox("Education", value=True, key="filter_education")
+    show_work = st.toggle("Work", value=True, key="filter_work")
+    show_education = st.toggle("Education", value=True, key="filter_education")
 
 selected_types = []
 if show_work:

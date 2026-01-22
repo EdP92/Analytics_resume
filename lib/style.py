@@ -450,15 +450,6 @@ def apply_base_styles() -> None:
         }
 
 
-        span:has(+input[type="checkbox"]) {
-            background-color: #e5e7eb !important;
-        }
-
-        span:has(+input[type="checkbox"]:checked) {
-            background-color: #374151 !important;
-            border: 2px solid #000000 !important;
-        }
-
         .stPlotlyChart,
         .stPlotlyChart > div,
         .stPlotlyChart > div > div {
